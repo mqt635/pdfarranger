@@ -18,15 +18,12 @@ You should have received a copy of the GNU General Public License
 along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <interface>
-  <object class="HdyApplicationWindow" id="main_window">
+  <object class="GtkApplicationWindow" id="main_window">
     <property name="show_menubar">False</property>
-    <child>
-      <object class="GtkBox">
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header_bar">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="HdyHeaderBar" id="header_bar">
-        <property name="visible">True</property>
+        <property name="spacing">4</property>
         <property name="show_close_button">True</property>
         <child>
           <object class="GtkBox">
@@ -261,7 +258,6 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
       <object class="GtkBox" id="main_box">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
-            <property name="expand">True</property>
         <child>
           <object class="GtkScrolledWindow" id="scrolledwindow">
             <property name="visible">True</property>
@@ -286,55 +282,22 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
           </packing>
         </child>
         <child>
-          <!-- n-columns=2 n-rows=1 -->
-          <object class="GtkGrid">
+          <object class="GtkBox">
             <property name="visible">True</property>
-            <property name="row_spacing">10</property>
             <child>
               <object class="GtkStatusbar" id="statusbar">
                 <property name="visible">True</property>
-                <property name="margin_right">183</property>
-                <property name="margin_start">4</property>
-                <property name="margin_end">4</property>
-                <property name="margin_top">4</property>
-                <property name="margin_bottom">4</property>
-                <property name="hexpand">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">1</property>
+                <property name="hexpand">1</property>
               </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkStatusbar" id="statusbar2">
                 <property name="visible">True</property>
-                <property name="halign">end</property>
-                <property name="margin_right">4</property>
-                <property name="margin_start">4</property>
-                <property name="margin_end">4</property>
-                <property name="margin_top">4</property>
-                <property name="margin_bottom">4</property>
-                <property name="hexpand">True</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">1</property>
               </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">0</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
         </child>
       </object>
-    </child>
-  </object>
     </child>
   </object>
 </interface>

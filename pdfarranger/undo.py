@@ -62,12 +62,14 @@ class Manager(object):
         state, self.label = self.states[self.current - 1]
         self.__set_state(state)
         self.current -= 1
+        self.app.set_unsaved(True)
         self.__refresh()
 
     def redo(self, _action, _param, _unused):
         state, self.label = self.states[self.current + 1]
         self.__set_state(state)
         self.current += 1
+        self.app.set_unsaved(True)
         self.__refresh()
 
     def set_actions(self, undo, redo):
@@ -83,7 +85,8 @@ class Manager(object):
             for page in state:
                 # Do not reset the zoom level
                 page.zoom = self.app.zoom_scale
-                self.model.append([page, page.description()])
+                page.resample = -1
+                self.model.append([page, page.description])
         self.app.update_iconview_geometry()
         self.app.update_max_zoom_level()
         self.app.retitle()

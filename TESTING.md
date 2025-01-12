@@ -1,67 +1,36 @@
-This file aims at listing all GUI operation one should do to test the whole PDF Arranger
-source code. Those tests must currently be done manually. May one day, they'll
-be done with [Dogtail](https://gitlab.com/dogtail/dogtail) or another GUI testing framework.
+# Testing
 
-As testing is done manually this list should remain as short as possible.
-Duplicate tests should be avoided and each step should test as many features as
-possible. This list was created using
-[Coverage.py](https://coverage.readthedocs.io).
+The code is tested using [unittest](https://docs.python.org/3/library/unittest.html) and [dogtail](https://gitlab.com/dogtail/dogtail). Currently there are 3 files:
+1. `test.py` which test the GUI
+2. `test_core.py` which test Page and LayerPage class
+3. `test_exporter.py` which test that exported pdf is as expected
 
--   Run `python3 -m pdfarranger mypdf.pdf`
+When a PR is made a test is automatically run. If the test fail it (should be) because the PR introduce a new bug, or because the behavior of the app is changed and the tests are not updated to reflect the change.
 
--   Crop and rotate one page
+The tests can be run locally using the examples below.
 
--   Rotate a page 4 time
+Some more info is found in beginning of test.py
 
--   Split a page
+## Run tests locally (with visible GUI)
 
--   Crop white border on another page
-
--   Edit PDF properties, change some properties, set multiple creators using json syntax
-    then validate the dialog with cursor still in the text field.
-
--   Delete one page
-
--   Undo delete, redo delete
-
--   Zoom / unzoom
-
--   Move one page using drag and drop
-
--   Cut / paste within same PDF Arranger instance
-
--   Save As
-
--   Import an image
-
--   Import a PDF file
-
--   Copy (`ctrl+c` / `ctrl+v`) a PDF file from a file explorer
-
--   Drag a PDF file from a file explorer
-
--   Copy a PDF file from another PDF Arranger instance and paste it interleaved
-
--   Select all pages, copy then paste odd
-
--   Select even page, then invert selection
-
--   Drag a PDF file from a PDF Arranger to a other PDF Arranger instance
-
--   Duplicate a page
-
--   Reverse order
-
--   Rubberband selection with scrolling
-
--   Open the about dialog
-
--   Quit, cancel
-
--   Quit without saving
-
-## Dogtail
-
+```sh
+# Make folder tests/ as a package
+touch tests/__init__.py
+# Run whole GUI test
+python3 -X tracemalloc -u -m unittest -v -f tests.test
+# Run only TestBatch5
+python3 -X tracemalloc -u -m unittest -v -f tests.test.TestBatch5
+# Run test_core
+python3 -X tracemalloc -u -m unittest -v -f tests.test_core
+# Run test_exporter
+python3 -X tracemalloc -u -m unittest -v -f tests.test_exporter
 ```
-docker run -w /src -v $PWD:/src jeromerobert/pdfarranger-docker-ci sh -c "pip install .[image] ; python3 -X tracemalloc -u -m unittest discover -s tests -v -f ; python3 -m coverage combine ; python3 -m coverage html"
+
+## Run tests in Docker (GUI not visible)
+
+```sh
+# Run all tests in test.py
+docker run -w /src -v $PWD:/src jeromerobert/pdfarranger-docker-ci:1.5.0 sh -c "pip install .[image] ; python3 -X tracemalloc -u -m unittest tests.test"
+# Run all tests (test.py, test_core.py, test_exporter.py) and coverage
+docker run -w /src -v $PWD:/src jeromerobert/pdfarranger-docker-ci:1.5.0 sh -c "pip install .[image] ; python3 -X tracemalloc -u -m unittest discover -s tests -v -f ; python3 -m coverage combine ; python3 -m coverage html"
 ```
