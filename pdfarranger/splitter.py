@@ -27,13 +27,15 @@ class Dialog(Gtk.Dialog):
             parent=window,
             flags=Gtk.DialogFlags.MODAL,
             buttons=(
-                Gtk.STOCK_CANCEL,
+                "_Cancel",
                 Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OK,
+                "_OK",
                 Gtk.ResponseType.OK,
             ),
         )
-        self.set_default_response(Gtk.ResponseType.OK)
+        buttonbox = self.get_action_area()
+        buttons = buttonbox.get_children()
+        self.set_focus(buttons[1])
         self.set_resizable(False)
         self.split_count = {'vertical' : 2, 'horizontal' : 1}
         self.even_splits = {'vertical' : True, 'horizontal' : True}
@@ -47,7 +49,7 @@ class Dialog(Gtk.Dialog):
         self.hcheck = Gtk.CheckButton()
         self.checkbuttons = {'vertical' : self.vcheck, 'horizontal' : self.hcheck}
 
-        hbox = Gtk.HBox()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.vbox.pack_start(hbox, True, True, 0)
         for direction in ['vertical', 'horizontal']:
             frame = self._build_frame(direction)
@@ -162,48 +164,48 @@ class Dialog(Gtk.Dialog):
         self.even_splits[direction] = button.get_active()
         self._update_split(None, direction)
 
-    def _crops(self, direction):
-        # Convert the tile sizes into a list of tuples (start, end) such that
-        # tile size = end - start.
-        num_splits = len(self.model[direction])
-        crops = [(0, 0.01 * self.model[direction][0][1])] * num_splits
-        crop_sum = 0.01 * self.model[direction][0][1]
-        for i in range(1, num_splits):
-            size = 0.01 * self.model[direction][i][1]
-            crop_sum += size
-            crops[i] = (crops[i-1][1], crops[i-1][1] + size)
-
-        # Remove zero-sized tiles
-        crops = [t for t in crops if t[0] < t[1]]
-
-        overlap = crop_sum - 1.0 # nonnegative
-        if overlap == 0.0:
-            return crops
-
-        # We have multiple splits and crop_sum > 1.0
-        # 35,35,35 => [0,35],[32.5,67.5],[65,100]; overlap = 5
-        # 60,60 => [0,60],[40,100]; overlap = 20
-        # In general:
-        #   [start=last-overlap/(num_splits-1),end=start+size]
-        overlap_per_tile = overlap / (num_splits - 1)
-
-        # Overlap is only defined when all tiles have the same size.
-        size = 0.01 * self.model[direction][0][1]
-        crops[0] = (0, size)
-        for i in range(1, num_splits - 1):
-            start = crops[i-1][1] - overlap_per_tile
-            end = start + size
-            crops[i] = (start, end)
-        crops[-1] = (1.0 - size, 1.0)
-        return crops
-
-
     def run_get(self):
         result = self.run()
         vcrops = None
         hcrops = None
         if result == Gtk.ResponseType.OK:
-            vcrops = self._crops('vertical')
-            hcrops = self._crops('horizontal')
+            vcrops = _crops(self.model['vertical'])
+            hcrops = _crops(self.model['horizontal'])
         self.destroy()
         return vcrops, hcrops
+
+# Operates over a 1D-array of [PAGE_N, FRAC] arrays
+def _crops(linear_tiles):
+    # Convert the tile sizes into a list of tuples (start, end) such that
+    # tile size = end - start.
+    num_splits = len(linear_tiles)
+    crops = [(0, 0.01 * linear_tiles[0][1])] * num_splits
+    crop_sum = 0.01 * linear_tiles[0][1]
+    for i in range(1, num_splits):
+        size = 0.01 * linear_tiles[i][1]
+        crop_sum += size
+        crops[i] = (crops[i-1][1], crops[i-1][1] + size)
+
+    # Remove zero-sized tiles
+    crops = [t for t in crops if t[0] < t[1]]
+
+    overlap = crop_sum - 1.0 # nonnegative
+    if overlap == 0.0:
+        return crops
+
+    # We have multiple splits and crop_sum > 1.0
+    # 35,35,35 => [0,35],[32.5,67.5],[65,100]; overlap = 5
+    # 60,60 => [0,60],[40,100]; overlap = 20
+    # In general:
+    #   [start=last-overlap/(num_splits-1),end=start+size]
+    overlap_per_tile = overlap / (num_splits - 1)
+
+    # Overlap is only defined when all tiles have the same size.
+    size = 0.01 * linear_tiles[0][1]
+    crops[0] = (0, size)
+    for i in range(1, num_splits - 1):
+        start = crops[i-1][1] - overlap_per_tile
+        end = start + size
+        crops[i] = (start, end)
+    crops[-1] = (1.0 - size, 1.0)
+    return crops

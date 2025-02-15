@@ -65,8 +65,33 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
             <attribute name="label" translatable="yes">Export _All Pages to Individual Files…</attribute>
             <attribute name="action">win.export-all</attribute>
           </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _PNG Images…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">4</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _JPG Images…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">5</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _Rasterized PDF (png)…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">6</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _Rasterized PDF (jpg)…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">7</attribute>
+          </item>
         </section>
       </submenu>
+      <item>
+        <attribute name="label" translatable="yes">_Print…</attribute>
+        <attribute name="action">win.print</attribute>
+        <attribute name="verb-icon">document-print-symbolic</attribute>
+      </item>
     </section>
     <section>
       <item>
@@ -82,38 +107,8 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
       <attribute name="label" translatable="yes">_Edit</attribute>
       <section>
         <item>
-          <attribute name="label" translatable="yes">Rotate _Left</attribute>
-          <attribute name="action">win.rotate</attribute>
-          <attribute name="target" type="i">-90</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Rotate Right</attribute>
-          <attribute name="action">win.rotate</attribute>
-          <attribute name="target" type="i">90</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Page Format</attribute>
-          <attribute name="action">win.page-format</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">Crop White Borders</attribute>
-          <attribute name="action">win.crop-white-borders</attribute>
-        </item>
-        <item>
           <attribute name="label" translatable="yes">_Delete</attribute>
           <attribute name="action">win.delete</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">Dupl_icate</attribute>
-          <attribute name="action">win.duplicate</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">Re_verse Order</attribute>
-          <attribute name="action">win.reverse-order</attribute>
-        </item>
-        <item>
-          <attribute name="label" translatable="yes">_Split Pages</attribute>
-          <attribute name="action">win.split</attribute>
         </item>
         <item>
           <attribute name="label" translatable="yes">Cu_t</attribute>
@@ -128,29 +123,108 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
           <attribute name="action">win.paste</attribute>
           <attribute name="target" type="i">0</attribute>
         </item>
+        <submenu>
+          <attribute name="label" translatable="yes">Past_e Special</attribute>
+          <item>
+            <attribute name="label" translatable="yes">Paste _Before</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">1</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As _Odd Pages</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">2</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As _Even Pages</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">3</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As O_verlay…</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">4</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As _Underlay…</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">5</attribute>
+          </item>
+        </submenu>
+        <submenu>
+          <attribute name="label" translatable="yes">_Extract</attribute>
+          <item>
+            <attribute name="label" translatable="yes">_Explode into Images</attribute>
+            <attribute name="action">win.explode-images</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Copy _Image</attribute>
+            <attribute name="action">win.extract</attribute>
+            <attribute name="target" type="i">0</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Copy _Text</attribute>
+            <attribute name="action">win.extract</attribute>
+            <attribute name="target" type="i">1</attribute>
+          </item>
+        </submenu>
         <item>
-          <attribute name="label" translatable="yes">Paste _Before</attribute>
-          <attribute name="action">win.paste</attribute>
-          <attribute name="target" type="i">1</attribute>
+          <attribute name="label" translatable="yes">Rotate _Left</attribute>
+          <attribute name="action">win.rotate</attribute>
+          <attribute name="target" type="i">-90</attribute>
         </item>
         <item>
-          <attribute name="label" translatable="yes">Paste As _Odd Pages</attribute>
-          <attribute name="action">win.paste</attribute>
-          <attribute name="target" type="i">2</attribute>
+          <attribute name="label" translatable="yes">_Rotate Right</attribute>
+          <attribute name="action">win.rotate</attribute>
+          <attribute name="target" type="i">90</attribute>
         </item>
         <item>
-          <attribute name="label" translatable="yes">Paste As _Even Pages</attribute>
-          <attribute name="action">win.paste</attribute>
-          <attribute name="target" type="i">3</attribute>
+          <attribute name="label" translatable="yes">_Page Size…</attribute>
+          <attribute name="action">win.page-size</attribute>
         </item>
         <item>
-          <attribute name="label" translatable="yes">Insert Blan_k Page</attribute>
+          <attribute name="label" translatable="yes">_Crop Margins…</attribute>
+          <attribute name="action">win.crop</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Hide Margins…</attribute>
+          <attribute name="action">win.hide</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Crop White Borders</attribute>
+          <attribute name="action">win.crop-white-borders</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Dupl_icate</attribute>
+          <attribute name="action">win.duplicate</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Re_verse Order</attribute>
+          <attribute name="action">win.reverse-order</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Split Pages…</attribute>
+          <attribute name="action">win.split</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Merge Pages…</attribute>
+          <attribute name="action">win.merge</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Insert Blan_k Page…</attribute>
           <attribute name="action">win.insert-blank-page</attribute>
         </item>
-        <item>
-          <attribute name="label" translatable="yes">Generate Booklet</attribute>
-          <attribute name="action">win.generate-booklet</attribute>
-        </item>
+        <submenu>
+          <attribute name="label" translatable="yes">_Booklet</attribute>
+          <item>
+            <attribute name="label" translatable="yes">_Generate (imposition)</attribute>
+            <attribute name="action">win.generate-booklet</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">_Split (unimposition)</attribute>
+            <attribute name="action">win.split-booklet</attribute>
+          </item>
+        </submenu>
       </section>
     </submenu>
     <submenu>
@@ -191,10 +265,15 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
           <attribute name="action">win.select</attribute>
           <attribute name="target" type="i">6</attribute>
         </item>
+        <item>
+          <attribute name="label" translatable="yes">Select _Range</attribute>
+          <attribute name="action">win.select</attribute>
+          <attribute name="target" type="i">7</attribute>
+        </item>
       </section>
     </submenu>
     <submenu>
-      <attribute name="label" translatable="yes">_Zoom</attribute>
+      <attribute name="label" translatable="yes">_View</attribute>
       <section>
         <item>
           <attribute name="label" translatable="yes">Zoom _In</attribute>
@@ -208,12 +287,22 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
           <attribute name="label" translatable="yes">Zoom _Fit</attribute>
           <attribute name="action">win.zoom-fit</attribute>
         </item>
+        <item>
+          <attribute name="label" translatable="yes">Full_screen</attribute>
+          <attribute name="action">win.fullscreen</attribute>
+        </item>
       </section>
     </submenu>
     <section>
       <item>
         <attribute name="label" translatable="yes">Edit _Properties</attribute>
         <attribute name="action">win.metadata</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Pre_ferences</attribute>
+        <attribute name="action">win.preferences</attribute>
       </item>
     </section>
     <section>
@@ -272,6 +361,37 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
             <attribute name="action">win.paste</attribute>
             <attribute name="target" type="i">3</attribute>
           </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As O_verlay…</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">4</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Paste As _Underlay…</attribute>
+            <attribute name="action">win.paste</attribute>
+            <attribute name="target" type="i">5</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+    <section>
+      <submenu>
+        <attribute name="label" translatable="yes">_Extract</attribute>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">_Explode into Images</attribute>
+            <attribute name="action">win.explode-images</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Copy _Image</attribute>
+            <attribute name="action">win.extract</attribute>
+            <attribute name="target" type="i">0</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Copy _Text</attribute>
+            <attribute name="action">win.extract</attribute>
+            <attribute name="target" type="i">1</attribute>
+          </item>
         </section>
       </submenu>
     </section>
@@ -314,6 +434,11 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
             <attribute name="action">win.select</attribute>
             <attribute name="target" type="i">6</attribute>
           </item>
+          <item>
+            <attribute name="label" translatable="yes">Select _Range</attribute>
+            <attribute name="action">win.select</attribute>
+            <attribute name="target" type="i">7</attribute>
+          </item>
         </section>
       </submenu>
     </section>
@@ -329,8 +454,16 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
         <attribute name="target" type="i">90</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_Page Format</attribute>
-        <attribute name="action">win.page-format</attribute>
+        <attribute name="label" translatable="yes">_Page Size…</attribute>
+        <attribute name="action">win.page-size</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Crop Margins…</attribute>
+        <attribute name="action">win.crop</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Hide Margins…</attribute>
+        <attribute name="action">win.hide</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Crop White Borders</attribute>
@@ -345,17 +478,28 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
         <attribute name="action">win.reverse-order</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_Split Pages</attribute>
+        <attribute name="label" translatable="yes">_Split Pages…</attribute>
         <attribute name="action">win.split</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Insert Blan_k Page</attribute>
-        <attribute name="action">win.insert-blank-page</attribute>
+        <attribute name="label" translatable="yes">_Merge Pages…</attribute>
+        <attribute name="action">win.merge</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Generate Booklet</attribute>
-        <attribute name="action">win.generate-booklet</attribute>
+        <attribute name="label" translatable="yes">Insert Blan_k Page…</attribute>
+        <attribute name="action">win.insert-blank-page</attribute>
       </item>
+      <submenu>
+        <attribute name="label" translatable="yes">_Booklet</attribute>
+        <item>
+          <attribute name="label" translatable="yes">_Generate (imposition)</attribute>
+          <attribute name="action">win.generate-booklet</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Split (unimposition)</attribute>
+          <attribute name="action">win.split-booklet</attribute>
+        </item>
+      </submenu>
     </section>
     <section>
       <submenu>
@@ -375,7 +519,26 @@ along with PDF Arranger.  If not, see <http://www.gnu.org/licenses/>.
             <attribute name="label" translatable="yes">Export _All Pages to Individual Files…</attribute>
             <attribute name="action">win.export-all</attribute>
           </item>
-
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _PNG Images…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">4</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _JPG Images…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">5</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Export Selection to _Rasterized PDF (png)…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">6</attribute>
+          </item>
+            <item>
+            <attribute name="label" translatable="yes">Export Selection to _Rasterized PDF (jpg)…</attribute>
+            <attribute name="action">win.export-selection</attribute>
+            <attribute name="target" type="i">7</attribute>
+          </item>
         </section>
       </submenu>
     </section>

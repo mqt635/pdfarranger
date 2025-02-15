@@ -1,4 +1,4 @@
-VERSION='1.9.0.dev1'
+VERSION='1.11.1'
 
 from cx_Freeze import setup, Executable
 import os
@@ -6,7 +6,6 @@ import sys
 import distutils
 import shutil
 import glob
-import pkg_resources
 
 include_files = [
     ('data/pdfarranger.ui', 'share/pdfarranger/pdfarranger.ui'),
@@ -16,8 +15,18 @@ include_files = [
 ]
 
 
+def clean_build():
+    dirs = os.listdir('build')
+    keep = ['mo', 'lib']
+    for d in dirs:
+        if d not in keep:
+            shutil.rmtree(os.path.join('build', d))
+
+
+clean_build()
+
+
 def addfile(relpath, warn_missing=False):
-    global include_files
     f = os.path.join(sys.prefix, relpath)
     if warn_missing and not os.path.isfile(f):
         print("{} cannot be found.".format(f), file=sys.stderr)
@@ -26,9 +35,12 @@ def addfile(relpath, warn_missing=False):
 
 
 def addlocale(name):
+    langs = os.listdir('build/mo')
     for path in glob.glob(os.path.join(sys.prefix,
                                        "share/locale/*/LC_MESSAGES/{}.mo".format(name))):
-        addfile(os.path.relpath(path, sys.prefix))
+        lang = os.path.split(os.path.split(os.path.split(path)[0])[0])[1]
+        if lang in langs:
+            addfile(os.path.relpath(path, sys.prefix))
 
 
 addlocale("gtk30")
@@ -37,7 +49,7 @@ addlocale("gtk30")
 def addicons():
     addfile("share/icons/hicolor/index.theme")
     addfile("share/icons/Adwaita/index.theme")
-    for i in ['places/folder', 'mimetypes/text-x-generic', 'status/image-missing']:
+    for i in ['places/folder', 'mimetypes/text-x-generic']:
         addfile(os.path.join('share/icons/Adwaita/16x16/', i + '.png'))
     icons = [
         'places/user-desktop',
@@ -76,31 +88,16 @@ def addicons():
     ]
 
     for i in icons:
-        addfile(os.path.join('share/icons/Adwaita/scalable/', i + '-symbolic.svg'))
+        addfile(os.path.join('share/icons/Adwaita/symbolic/', i + '-symbolic.svg'))
 
 required_dlls = [
-    'gtk-3-0',
-    'gdk-3-0',
-    'epoxy-0',
-    'gdk_pixbuf-2.0-0',
-    'pango-1.0-0',
-    'pangocairo-1.0-0',
-    'pangoft2-1.0-0',
-    'pangowin32-1.0-0',
-    'atk-1.0-0',
     'poppler-glib-8',
-    'xml2-2',
-    'rsvg-2-2',
     'handy-1-0',
 ]
 
 for dll in required_dlls:
     fn = 'lib' + dll + '.dll'
     include_files.append((os.path.join(sys.prefix, 'bin', fn), fn))
-
-# zlib1 is first loaded by a DLL located in lib
-include_files.append((os.path.join(sys.prefix, 'bin', 'zlib1.dll'),
-                      os.path.join('lib', 'zlib1.dll'),))
 
 required_gi_namespaces = [
     "Gtk-3.0",
@@ -116,23 +113,18 @@ required_gi_namespaces = [
     "Poppler-0.18",
     "HarfBuzz-0.0",
     "Handy-1",
+    "freetype2-2.0",
 ]
 
 for ns in required_gi_namespaces:
     addfile("lib/girepository-1.0/{}.typelib".format(ns))
 
-addfile("lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.dll")
+addfile("lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-bmp.dll")
+addfile("lib/gdk-pixbuf-2.0/2.10.0/loaders/pixbufloader_svg.dll")
 addfile("lib/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-png.dll")
 addfile("lib/gdk-pixbuf-2.0/2.10.0/loaders.cache")
 addfile("share/glib-2.0/schemas/gschemas.compiled")
 addicons()
-
-
-# Add support for pikepdf.__version__
-distrib = pkg_resources.get_distribution('pikepdf')
-from_path = os.path.join(distrib.egg_info, 'INSTALLER')
-to_path = os.path.join('lib', os.path.basename(distrib.egg_info), 'INSTALLER')
-include_files.append((from_path, to_path))
 
 
 # gspawn-helper is needed for website link in AboutDialog
@@ -144,8 +136,6 @@ include_files.append((from_path, to_path))
 build_options = dict(
     packages=['gi', 'packaging', 'pikepdf'],
     excludes=['tkinter', 'test'],
-    # manually added to the lib folder
-    bin_excludes=['zlib1.dll'],
     include_files=include_files,
 )
 
@@ -155,8 +145,13 @@ def get_target_name(suffix):
 
 
 msi_options = dict(
-    target_name=get_target_name('installer.msi'),
-    upgrade_code='{ab1752a6-575c-42e1-a261-b85cb8a6b524}'
+    upgrade_code='{ab1752a6-575c-42e1-a261-b85cb8a6b524}',
+    extensions=[{
+        "extension": "pdf",
+        "verb": "open",
+        "executable": "pdfarranger.exe",
+        "argument": '"%1"',
+    }]
 )
 
 
@@ -186,15 +181,31 @@ class bdist_zip(distutils.cmd.Command):
         shutil.rmtree(build_exe.build_exe)
 
 
-setup(name='pdfarranger',
+setup(name='PDF Arranger',
+      author='The PDF Arranger team',
       version=VERSION,
-      description='A simple application for PDF Merging, Rearranging, and Splitting',
+      description='PDF Arranger',
+      long_description='A simple application for PDF Merging, Rearranging, and Splitting',
       options=dict(build_exe=build_options, bdist_msi=msi_options),
       cmdclass={'bdist_zip': bdist_zip},
+      packages=['pdfarranger'],
       executables=[Executable('pdfarranger/__main__.py',
                               base='Win32GUI' if sys.platform == 'win32' else None,
-                              targetName='pdfarranger.exe',
+                              target_name='pdfarranger.exe',
                               icon='data/pdfarranger.ico',
-                              shortcutName='PDF Arranger',
-                              shortcutDir='StartMenuFolder'
+                              shortcut_name='PDF Arranger',
+                              shortcut_dir='StartMenuFolder'
                               )])
+
+
+def rename_msi():
+    # cx_freeze 6.15: Workaround for having different filename and "ProductName" for the msi.
+    dist_dir = os.path.join(os.getcwd(), 'dist')
+    msi = [f for f in os.listdir(dist_dir) if f.endswith('.msi')]
+    if len(msi) > 0:
+        old_name = os.path.join(dist_dir, msi[0])
+        new_name = os.path.join(dist_dir, get_target_name('installer.msi'))
+        shutil.move(old_name, new_name)
+
+if 'bdist_msi' in sys.argv:
+    rename_msi()

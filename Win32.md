@@ -2,7 +2,8 @@
 
 ## Prerequisites
 
-Install [MSYS2](http://www.msys2.org) then upgrade it:
+Install [MSYS2](http://www.msys2.org). Once installed start `MSYS2 MSYS` shell.
+Update all packages: 
 
 ```
 pacman -Syu
@@ -21,29 +22,50 @@ pacman -S mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python-gobject \
  mingw-w64-x86_64-python-cairo mingw-w64-x86_64-poppler mingw-w64-x86_64-gcc \
  mingw-w64-x86_64-python-lxml mingw-w64-x86_64-qpdf mingw-w64-x86_64-pybind11 \
  mingw-w64-x86_64-gettext mingw-w64-x86_64-gnutls mingw-w64-x86_64-python-pillow \
- mingw-w64-x86_64-python-dateutil mingw-w64-x86_64-python-pip git python-pip intltool
+ mingw-w64-x86_64-python-dateutil mingw-w64-x86_64-python-pip mingw-w64-x86_64-libhandy \
+ mingw-w64-x86_64-python-cx_Freeze git python-pip
 ```
 
-and
+For Python 3.12 or newer:
 
 ```
-pip install --user https://launchpad.net/python-distutils-extra/trunk/2.39/+download/python-distutils-extra-2.39.tar.gz
-/mingw64/bin/python3 -m pip install --user keyboard img2pdf pikepdf https://github.com/jeromerobert/cx_Freeze/zipball/pdfarranger
+export PATH=$PATH:/mingw64/bin
+/mingw64/bin/python3.exe -m pip install --user keyboard darkdetect pikepdf img2pdf
 ```
 
-Get the PDF Arranger sources from a MSYS2 shell:
+For Python 3.11 or older:
+
+```
+export PATH=$PATH:/mingw64/bin
+SETUPTOOLS_USE_DISTUTILS=stdlib \
+ /mingw64/bin/python3.exe -m pip install --user keyboard darkdetect pikepdf img2pdf
+```
+
+## Building PDF Arranger
+
+Get the PDF Arranger sources:
 
 ```
 git clone https://github.com/pdfarranger/pdfarranger.git
 ```
 
-## Building distributions
+Then
 
 ```
 cd pdfarranger
-./setup.py build
-/mingw64/bin/python3 setup_win32.py bdist_msi
-/mingw64/bin/python3 setup_win32.py bdist_zip
+/mingw64/bin/python3.exe ./setup.py build
+/mingw64/bin/python3.exe setup_win32.py bdist_msi
+/mingw64/bin/python3.exe setup_win32.py bdist_zip
+```
+
+## Debug / hacking
+
+After running `setup.py build` it's possible to run PDF Arranger without creating the installer:
+
+```
+cd pdfarranger
+/mingw64/bin/python3.exe ./setup.py build
+/mingw64/bin/python3.exe -m pdfarranger
 ```
 
 ## Wine
@@ -59,13 +81,22 @@ To run the PDF Arranger in Wine you may have to:
 unset $(env |grep ^XDG_ | cut -d= -f1)
 ```
 
-## Docker
+## Docker / Podman
 
-```
-alias pythonwin32="docker run -v local:/root/.wine/drive_c/users/root/.local -v $PWD:/pdfarranger -w /pdfarranger -it jeromerobert/wine-mingw64 wine cmd /c z:/mingw64/bin/python"
-cd pdfarranger
-./setup.py build
-pythonwin32 -m pip install --user pikepdf==1.19.3 img2pdf python-dateutil https://github.com/jeromerobert/cx_Freeze/zipball/pdfarranger
+```bash
+#! /bin/sh -ex
+
+mydocker() {
+  # You may switch to docker and adapt image name & tag if needed
+  podman run -v local:/root/.wine/drive_c/users/root/.local \
+    -v $PWD:/pdfarranger -w /pdfarranger -it docker.io/jeromerobert/wine-mingw64:1.8.1 "$@"
+}
+
+pythonwin32() {
+  mydocker wine cmd /c z:/mingw64/bin/python "$@"
+}
+
+mydocker ./setup.py build
 pythonwin32 setup_win32.py bdist_msi
 pythonwin32 setup_win32.py bdist_zip
 ```

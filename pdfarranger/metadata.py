@@ -26,12 +26,13 @@ from dateutil import parser
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from gi.repository import Pango
 _ = gettext.gettext
 
-# The producer property can be overriden by pikepdf
+# The producer property can be overridden by pikepdf
 PRODUCER = '{http://ns.adobe.com/pdf/1.3/}Producer'
 # Currently the only property which support lists as values. If you add more
-# please implement a generic mecanism.
+# please implement a generic mechanism.
 _CREATOR = '{http://purl.org/dc/elements/1.1/}creator'
 _CREATED = '{http://ns.adobe.com/xap/1.0/}CreateDate'
 _MODIFIED = '{http://ns.adobe.com/xap/1.0/}ModifyDate'
@@ -86,22 +87,41 @@ def _safeiter(elements):
             break
         except ValueError:
             traceback.print_exc()
+        except KeyError:
+            # Workaround for https://github.com/pdfarranger/pdfarranger/issues/1019
+            pass
 
 
-def merge(metadata, input_files):
-    """ Merge current global metadata and each imported files meta data """
+def merge_doc(metadata, input_docs):
+    """Same as merge but with pikepdf.PDF object instead of files
+
+    XMP metadata take precedence over equivalent docinfo metadata,
+    metadata of later opened files are merged into these of earlier opened ones
+    """
     r = metadata.copy()
-    for copyname, password in input_files:
-        doc = pikepdf.open(copyname, password=password)
+    for doc in input_docs:
         with doc.open_metadata() as meta:
+            for k, v in _safeiter(meta.items()):
+                if not _pikepdf_meta_is_valid(v):
+                    # workaround for https://github.com/pikepdf/pikepdf/issues/84
+                    del meta[k]
+                elif k not in r:
+                    r[k] = v
+            # workaround for https://github.com/pdfarranger/pdfarranger/issues/1168
             load_from_docinfo(meta, doc)
             for k, v in _safeiter(meta.items()):
                 if not _pikepdf_meta_is_valid(v):
                     # workaround for https://github.com/pikepdf/pikepdf/issues/84
                     del meta[k]
-                elif k not in metadata:
+                elif k not in r:
                     r[k] = v
     return r
+
+
+def merge(metadata, input_files):
+    """Merge current global metadata and each imported files meta data"""
+    docs = [pikepdf.open(copyname, password=password) for copyname, password in input_files]
+    return merge_doc(metadata, docs)
 
 
 def _metatostr(value, name):
@@ -186,15 +206,15 @@ def edit(metadata, pdffiles, parent):
     """
     Edit the current meta data
 
-    :param metadata: The dictionnary of meta data to modify
+    :param metadata: The dictionary of meta data to modify
     :param pdffiles: A list of PDF from witch to take the initial meta data
     :param parent: The parent window
     """
     dialog = Gtk.Dialog(title=_('Edit properties'),
                         parent=parent,
                         flags=Gtk.DialogFlags.MODAL,
-                        buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                 Gtk.STOCK_OK, Gtk.ResponseType.OK))
+                        buttons=(_("_Cancel"), Gtk.ResponseType.CANCEL,
+                                 _("_OK"), Gtk.ResponseType.OK))
     ok_button = dialog.get_widget_for_response(response_id = Gtk.ResponseType.OK)
     ok_button.grab_focus()
     # Property, Value, XMP name (hidden)
@@ -208,6 +228,8 @@ def edit(metadata, pdffiles, parent):
         title, editable = v
         renderer = Gtk.CellRendererText()
         if editable:
+            renderer.props.ellipsize = Pango.EllipsizeMode.END
+            renderer.props.width_chars = 50
             renderer.set_property("editable", True)
             handler = _EditedEventHandler(liststore)
             renderer.connect("editing-started", handler.started)

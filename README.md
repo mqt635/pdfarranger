@@ -1,68 +1,65 @@
 ## About
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/pdfarranger/pdfarranger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pdfarranger/pdfarranger/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/pdfarranger/pdfarranger.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/pdfarranger/pdfarranger/context:python)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1be9c9a69f3a44b79612cc5b2887c0f7)](https://www.codacy.com/gh/pdfarranger/pdfarranger/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pdfarranger/pdfarranger&amp;utm_campaign=Badge_Grade)
+[![CodeQL](https://github.com/pdfarranger/pdfarranger/workflows/CodeQL/badge.svg)](https://github.com/pdfarranger/pdfarranger/actions?query=workflow%3ACodeQL "Code quality workflow status")
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/1be9c9a69f3a44b79612cc5b2887c0f7)](https://app.codacy.com/gh/pdfarranger/pdfarranger/dashboard)
 [![pdfarranger](https://github.com/pdfarranger/pdfarranger/workflows/pdfarranger/badge.svg)](https://github.com/pdfarranger/pdfarranger/actions?query=workflow%3Apdfarranger+branch%3Amain)
 [![codecov](https://codecov.io/gh/pdfarranger/pdfarranger/branch/main/graph/badge.svg)](https://codecov.io/gh/pdfarranger/pdfarranger)
 
 *PDF Arranger* is a small python-gtk application, which helps the user to merge
-or split pdf documents and rotate, crop and rearrange their pages using an
-interactive and intuitive graphical interface. It is a frontend for
+or split PDF documents and rotate, crop and rearrange their pages using an
+interactive and intuitive graphical interface. It is a front end for
 [pikepdf](https://github.com/pikepdf/pikepdf).
 
-*PDF Arranger* is a fork of Konstantinos Poulios’s pdfshuffler
+*PDF Arranger* is a fork of Konstantinos Poulios’s PDF-Shuffler
 (see [Savannah](https://savannah.nongnu.org/projects/pdfshuffler) or
 [Sourceforge](http://sourceforge.net/projects/pdfshuffler)).
 It’s a humble attempt to make the project a bit more active.
 
-![screenshot of pdfarranger](https://github.com/pdfarranger/pdfarranger/raw/main/data/screenshot.png)
+For more info see [User Manual](https://github.com/pdfarranger/pdfarranger/wiki/User-Manual).
+
+![screenshot of PDF Arranger](https://github.com/pdfarranger/pdfarranger/raw/main/data/screenshot.png)
 
 ## Downloads
 
-| [PDF Arranger for Windows](https://github.com/pdfarranger/pdfarranger/releases) | <a href='https://flathub.org/apps/details/com.github.jeromerobert.pdfarranger'><img width='120' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.svg'/></a> | [More…](https://github.com/pdfarranger/pdfarranger/wiki/Binary-packages) |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [PDF Arranger for Windows](https://github.com/pdfarranger/pdfarranger/releases) | <a href='https://flathub.org/apps/details/com.github.jeromerobert.pdfarranger'><img width='120' alt='Download on Flathub' src='https://flathub.org/assets/badges/flathub-badge-en.svg'/></a> | <a href="https://snapcraft.io/pdfarranger"><img width='120' alt="Get it from the Snap Store" src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg" /></a> | [More…](https://github.com/pdfarranger/pdfarranger/wiki/Binary-packages) |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+
 
 ### Linux and BSD packages
 
 [![Linux packages](https://repology.org/badge/vertical-allrepos/pdfarranger.svg?columns=4&exclude_unsupported=1)](https://repology.org/project/pdfarranger/versions)
 
-## Customization of keyboard shortcuts
-
-In case you are not satisfied with the default keyboard shortcuts they can be
-changed. To do so, set `enable_custom` to `true` and edit the shortcuts in `config.ini`:\
-`~/.config/pdfarranger/config.ini` (Linux)\
-`C:\Users\username\AppData\Roaming\pdfarranger\config.ini` (Windows installer version)\
-In Windows portable version the file is located in the same folder as pdfarranger.exe.
-Optionally this file can be removed. The application will then use the same config file location as installer version.
-
 ## Install from source
 
-*PDF Arranger* requires [pikepdf](https://github.com/pikepdf/pikepdf) >= 1.17.0.
-pip will automatically install the latest pikepdf if there is no pikepdf installed on the system.
+*PDF Arranger* requires [pikepdf](https://github.com/pikepdf/pikepdf) >= 6.
+Pip will automatically install the latest pikepdf if there is no pikepdf installed on the system.
 
-**On Debian based distributions**
+**On Debian-based distributions**
 
 ```
-sudo apt-get install python3-pip python3-distutils-extra python3-wheel python3-gi python3-gi-cairo gir1.2-gtk-3.0 gir1.2-poppler-0.18 gir1.2-handy-1 python3-setuptools
+sudo apt-get install python3-pip python3-wheel python3-gi python3-gi-cairo \
+    gir1.2-gtk-3.0 gir1.2-poppler-0.18 gir1.2-handy-1 python3-setuptools
 ```
 
 **On Arch Linux**
 
 ```
-sudo pacman -S poppler-glib python-distutils-extra python-pip python-gobject gtk3 python-cairo libhandy
+sudo pacman -S poppler-glib python-pip python-gobject gtk3 python-cairo libhandy
 ```
 
 **On Fedora**
 
 ```
-sudo dnf install poppler-glib python3-distutils-extra python3-pip python3-gobject gtk3 python3-cairo python3-wheel python3-pikepdf python3-img2pdf python3-dateutil
+sudo dnf install poppler-glib python3-pip python3-gobject gtk3 python3-cairo \
+    python3-wheel python3-pikepdf python3-img2pdf python3-dateutil libhandy
 ```
 
 **On FreeBSD**
 
 ```
-sudo pkg install devel/gettext devel/py-gobject3 devel/py-pip devel/py-python-distutils-extra graphics/poppler-glib textproc/intltool textproc/py-pikepdf x11-toolkits/gtk30
+sudo pkg install devel/gettext devel/py-gobject3 devel/py-pip \
+    graphics/poppler-glib textproc/py-pikepdf x11-toolkits/gtk30 \
+    x11-toolkits/libhandy
 ```
 
 **Then**
@@ -82,37 +79,36 @@ cd pdfarranger
 python3 -m pdfarranger
 ```
 
+For testing see [TESTING.md](TESTING.md).
+
 For Windows see [Win32.md](Win32.md).
+
+For macOS see [macOS.md](macOS.md).
+
 
 ## For translators
 
--   Download the main branch (see [For developers](#for-developers))
+Translations are located in the following files:
 
--   Run `po/genpot.sh`. The `pot` is an automatically generated file and as such
-    should not be in the repository. It is to make life of some translators
-    easier, but it may be often not synchronized with the source code. If you can
-    regenerate it before adding or updating a translation, then do it.
+*   [`po`](po)`/LANG.po` for interface translation strings
+*   [data/com.github.jeromerobert.pdfarranger.metainfo.xml](data/com.github.jeromerobert.pdfarranger.metainfo.xml) for repository integration
+*   [data/com.github.jeromerobert.pdfarranger.desktop](data/com.github.jeromerobert.pdfarranger.desktop) for desktop integration
 
--   Translations are in the following files:
-    -   [`po`](po)`/*.po`
-    -   [data/com.github.jeromerobert.pdfarranger.metainfo.xml](data/com.github.jeromerobert.pdfarranger.metainfo.xml)
-    -   [data/com.github.jeromerobert.pdfarranger.desktop](data/com.github.jeromerobert.pdfarranger.desktop)
+If you are not comfortable working with git, **you may edit translations directly from Github's web interface**. However, in the normal case
+you would contribute translations by following these steps:
 
--   For mnemonics accelerators (letters preceded by an underscore) try to follow
-    those rules by priority order:
-    -   be consistent with other GTK/GNOME software
-    -   pick a unique letter **within that given menu** if possible
-    -   pick the same letter as the original string if available
-    -   pick a strong letter (e.g. in "Search and replace" rather pick `s`, `r` or `p` than `a`)
+*   Download the main branch (see [For developers](#for-developers))
+*   Checkout a new branch to save your changes: `git checkout -b update-translation-LANG`
+*   Run `po/updatepo.sh LANG`, where `LANG` is the locale you'd like to update
+*   Update your translations in `po/LANG.po` file, and commit them; do not commit changes to `po/pdfarranger.pot` which may have been
+    automatically regenerated
+*   If possible, test your translation to see it in context (see [For developers](#for-developers))
+*   Create a new pull request with your changes to the main branch
 
--   If possible test your translation to see it in context (see [For developers](#for-developers))
+If you are editing mnemonics accelerators (letters preceded by an underscore), here are some additional guidelines. However, if you have no idea what this means, don't worry about it.
+Try to follow these rules by priority order:
 
--   You may test different languages with `LANG=xx_YY python3 -m pdfarranger`
-
--   Do not include `pdfarranger.pot` (or any `*.po` file which was just
-    automatically regenerated) in your pull request. Submit only the translations
-    you actually updated or added.
-
--   If you don’t want or can’t use the developers tooling (`git`,
-    `po/genpot.sh`, `python`, …) you can edit, download or upload the `*.po`
-    files from the GitHub web pages.
+*   be consistent with other GTK/GNOME software
+*   pick a unique letter **within that given menu** if possible
+*   pick the same letter as the original string if available
+*   pick a strong letter (e.g. in "Search and replace" rather pick `s`, `r` or `p` than `a`)
